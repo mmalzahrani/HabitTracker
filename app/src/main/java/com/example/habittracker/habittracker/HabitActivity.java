@@ -9,6 +9,8 @@ import android.os.Bundle;
 import com.example.habittracker.habittracker.data.HabitContract.HabitEntry;
 import com.example.habittracker.habittracker.data.HabitDbHelper;
 
+import static android.R.attr.id;
+
 
 public class HabitActivity extends AppCompatActivity {
 
@@ -23,6 +25,13 @@ public class HabitActivity extends AppCompatActivity {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
         mDbHelper = new HabitDbHelper(this);
+
+        String id = "0";
+
+        insertHabit();
+        query();
+        getHabit(id);
+
     }
 
     /* query method
@@ -51,6 +60,7 @@ public class HabitActivity extends AppCompatActivity {
                 null,                      // Don't filter by row groups
                 null);                     // The sort order
 
+
         try {
             // Figure out the index of each column
             int idColumnIndex = cursor.getColumnIndex(HabitEntry._ID);
@@ -75,6 +85,34 @@ public class HabitActivity extends AppCompatActivity {
         }
     }
 
+    /* getHabit method
+      * Helper method to read the database where id = 0
+     */
+    private Cursor getHabit(String id) {
+        // Create and/or open a database to read from it
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                HabitEntry._ID,
+                HabitEntry.COLUMN_HABIT_NAME,
+                HabitEntry.COLUMN_HABIT_STATUS,
+                HabitEntry.COLUMN_HABIT_STATUS
+        };
+
+        // Define 'where' habit of query
+        String selection = HabitEntry._ID + "=?";
+        // specify argument in placeholder order
+        String[] selectionArg = new String[]{id};
+
+        try {
+            Cursor c = db.query(HabitEntry.TABLE_NAME, projection, selection, selectionArg, null, null, null);
+            return c;
+
+        } catch (Exception e){
+            return null;
+        }
+    }
+
     /* insertHabit method
       * Helper method to write to the database
     */
@@ -90,7 +128,7 @@ public class HabitActivity extends AppCompatActivity {
         valuesOne.put(HabitEntry.COLUMN_HABIT_NEED, "Necessary");
 
         // Insert new valuesOne to the DB
-        long newRowID = db.insert(HabitEntry.TABLE_NAME, null, valuesOne);
+        db.insert(HabitEntry.TABLE_NAME, null, valuesOne);
 
 
         // Create a ContentValues object                                        2
@@ -100,6 +138,6 @@ public class HabitActivity extends AppCompatActivity {
         valuesTwo.put(HabitEntry.COLUMN_HABIT_NEED, "No Need");
 
         // Insert new valuesTwo to the DB
-        newRowID = db.insert(HabitEntry.TABLE_NAME, null, valuesTwo);
+        db.insert(HabitEntry.TABLE_NAME, null, valuesTwo);
     }
 }

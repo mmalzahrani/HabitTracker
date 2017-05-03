@@ -37,7 +37,7 @@ public class HabitContract {
         public static final String COLUMN_HABIT_NEED = "need";
 
 
-        /* Possible values for the gender of the Habit. */
+        /* Possible values for the status of the Habit. */
         public static final int STATUS_BAD = 0;
         public static final int STATUS_GOOD = 1;
 
